@@ -1,0 +1,1 @@
+# 0g_storage_all-one-cmd.sh
