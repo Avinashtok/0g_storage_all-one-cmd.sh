@@ -1,7 +1,14 @@
 #!/bin/bash
 
+print_header() {
+    # Alpha Storage Node header
+    echo -e "\033[1;33m╔════════════════════════════════════════════════╗\033[0m"
+    echo -e "\033[1;36m║          ★★ 👑 Alpha Storage Node 👑 ★★        ║\033[0m"
+    echo -e "\033[1;33m╚════════════════════════════════════════════════╝\033[0m"
+}
+
 show_menu() {
-    echo "===== Zstake Storage Node Installation Menu ====="
+    print_header
     echo "1. Install 0g-storage-node"
     echo "2. Update 0g-storage-node"
     echo "3. Turbo Mode(Reset Config.toml & Systemctl)"
@@ -14,6 +21,7 @@ show_menu() {
 }
 
 install_node() {
+    print_header
     echo "Installing 0g-storage-node..."
     rm -r $HOME/0g-storage-node
     sudo apt-get update
@@ -49,6 +57,7 @@ EOF
 }
 
 update_node() {
+    print_header
     echo "Updating 0g-storage-node..."
     sudo systemctl stop zgs
     cp $HOME/0g-storage-node/run/config.toml $HOME/0g-storage-node/run/config.toml.backup
@@ -66,6 +75,7 @@ update_node() {
 }
 
 reset_config_systemctl() {
+    print_header
     echo "Resetting Config.toml and Systemctl (Turbo Mode)..."
     rm -rf $HOME/0g-storage-node/run/config.toml
     curl -o $HOME/0g-storage-node/run/config.toml https://raw.githubusercontent.com/zstake-xyz/test/refs/heads/main/0g_storage_turbo.toml
@@ -91,15 +101,16 @@ EOF
 }
 
 select_rpc() {
+    print_header
     echo "Select an RPC Endpoint:"
-    echo "1. https://evmrpc-testnet.0g.ai"
-    echo "2. "
-    echo "3. "
+    echo "1. https://0g-evmrpc.sr20de.xyz/"
+    echo "2. https://0g-evm.maouam.nodelab.my.id/"
+    echo "3. https://evmrpc-testnet.0g.ai"
     read -p "Enter your choice (1-3): " rpc_choice
     case $rpc_choice in
-        1) rpc="https://evmrpc-testnet.0g.ai" ;;
-        2) rpc=" " ;;
-        3) rpc=" " ;;
+        1) rpc="https://0g-evmrpc.sr20de.xyz/" ;;
+        2) rpc="https://0g-evm.maouam.nodelab.my.id/" ;;
+        3) rpc="https://evmrpc-testnet.0g.ai" ;;
         *) echo "Invalid choice. Exiting."; return ;;
     esac
     sed -i "s|^blockchain_rpc_endpoint = .*|blockchain_rpc_endpoint = \"$rpc\"|g" ~/0g-storage-node/run/config.toml
@@ -110,6 +121,7 @@ select_rpc() {
 }
 
 set_miner_key() {
+    print_header
     echo "Please enter your Miner Key:"
     read miner_key
     sed -i "s|^miner_key = .*|miner_key = \"$miner_key\"|g" ~/0g-storage-node/run/config.toml
@@ -122,6 +134,7 @@ set_miner_key() {
 }
 
 snapshot_install() {
+    print_header
     echo "===== Snapshot Install Menu ====="
     echo "1. Turbo Mode Snapshot Install"
     echo "2. Back to Main Menu"
@@ -129,6 +142,7 @@ snapshot_install() {
     read -p "Select an option (1-2): " snap_choice
     case $snap_choice in
         1) 
+            print_header
             echo "Installing Standard Mode Snapshot..."
             source <(curl -s https://raw.githubusercontent.com/zstake-xyz/test/refs/heads/main/0g_zgs_standard_snapshot.sh)
             echo "Turbo Mode Snapshot installation completed."
@@ -145,6 +159,7 @@ snapshot_install() {
 }
 
 show_logs() {
+    print_header
     echo "Displaying logs..."
     sudo systemctl daemon-reload && sudo systemctl enable zgs && sudo systemctl start zgs
     tail -f ~/0g-storage-node/run/log/zgs.log.$(TZ=UTC date +%Y-%m-%d)
